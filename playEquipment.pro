@@ -35,5 +35,3 @@ FORMS += \
 
 DISTFILES +=
 
-RESOURCES += \
-    resurce.qrc
