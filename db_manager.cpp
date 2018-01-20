@@ -26,6 +26,41 @@ QStringList DB_Manager::getListTables()
     return QStringList();
 }
 
+QStringList DB_Manager::getAllItems()
+{
+    QStringList result;
+    QSqlQuery query;
+    if (!query.exec("SELECT * FROM items")) {
+        qDebug() << "get Items error: " <<db.lastError().text();
+    } else {
+        QSqlRecord rec = query.record();
+        int id = rec.indexOf("id");
+        int name =rec.indexOf("name");
+        int pic = rec.indexOf("pic");
+
+        while (query.next())
+        {
+            result << query.value(id).toString();
+            result << query.value(name).toString();
+            result << query.value(pic).toString();
+        }
+    }
+    return result;
+}
+
+QStringList DB_Manager::getEquipment()
+{
+    QStringList result;
+    QSqlQuery query("SELECT * FROM equipment");
+    int id = query.record().indexOf("id");
+    while (query.next())
+    {
+       QString str = query.value(id).toString();
+       result << str;
+    }
+    return result;
+}
+
 void DB_Manager::createTables()
 {
     if(db.isOpen())
@@ -33,7 +68,7 @@ void DB_Manager::createTables()
         QSqlQuery query(db);
         QString   str  = "CREATE TABLE IF NOT EXISTS items("
                          " id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                         " name VARCHAR(255) NOT NULL, "
+                         " name VARCHAR(255) NOT NULL UNIQUE, "
                          " pic VARCHAR(255)"
                          ")";
         if (!query.exec(str)) {
@@ -64,7 +99,7 @@ bool DB_Manager::insertIntoItems(const QString &itemsname, const QString &path)
         return true;
     else
     {
-        qDebug() << "AddItem error: " << query.lastError();
+        qDebug() << "Add Item error: " << query.lastError();
         return false;
     }
 }
@@ -82,9 +117,41 @@ bool DB_Manager::insertIntoEquipment(const int &id, const int &id_item, const in
         return true;
     else
     {
-        qDebug() << "AddEquipment error: " << query.lastError();
+        qDebug() << "Add Equipment error: " << query.lastError();
         return false;
     }
+}
+
+bool DB_Manager::deleteFromItems(const QString &itemsname)
+{
+    if(itemsname.isEmpty() == true)
+        return false;
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM items WHERE name = (:itemsname)");
+    query.bindValue(":itemsname", itemsname);
+    if(!query.exec())
+    {
+        qDebug() << "delete Item error: " << query.lastError();
+        return false;
+    }
+    else
+        return true;
+}
+
+bool DB_Manager::deleteFromEquipment(const int &id)
+{
+    if(id < 1)
+        return false;
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM equipment WHERE id = (:id)");
+    query.bindValue(":id", id);
+    if(!query.exec())
+    {
+        qDebug() << "delete Equipment error: " << query.lastError();
+        return false;
+    }
+    else
+        return true;
 }
 
 

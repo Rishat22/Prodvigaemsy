@@ -15,9 +15,14 @@ MainWindow::MainWindow(QWidget *parent) :
     dbase->createTables(); //если (БД удалялась и) какой то из "equipment", "items" не хватает, создать их
     dbase->insertIntoItems("apple","pic1.jpg"); //добавление элемента в таблицу Items
     dbase->insertIntoEquipment(2,1,5); //добавление элемента в таблицу Equipment
+    dbase->insertIntoItems("orange","pic2,png");
+    //dbase->deleteFromItems("orange"); //удаление из Items
+    QStringList items = dbase->getAllItems(); //получение всего списка таблиц
+    qDebug() << items;
+
     //конец
 
-    qDebug() << tables;
+
 }
 
 MainWindow::~MainWindow()
