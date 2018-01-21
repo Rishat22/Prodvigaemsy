@@ -25,13 +25,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    apples.cpp \
+    inventory.cpp \
+    inventoryitem.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    apples.h \
+    inventory.h \
+    inventoryitem.h
 
 FORMS += \
         mainwindow.ui
 
-DISTFILES +=
+
+
+RESOURCES += \
+    resources.qrc
 
