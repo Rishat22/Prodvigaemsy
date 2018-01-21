@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 QT += multimedia
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,6 +26,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
+<<<<<<< HEAD
     apples.cpp \
     inventory.cpp \
     inventoryitem.cpp
@@ -35,6 +36,13 @@ HEADERS += \
     apples.h \
     inventory.h \
     inventoryitem.h
+=======
+    db_manager.cpp
+
+HEADERS += \
+        mainwindow.h \
+    db_manager.h
+>>>>>>> 19c15bce2d2788af110d66d360cea11233d20da1
 
 FORMS += \
         mainwindow.ui
