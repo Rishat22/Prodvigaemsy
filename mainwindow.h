@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QPropertyAnimation> //скрытие главного меню
 #include <QFile>
-#include <QSound> //аудио сопровождение
+
 
 //вспамогательные библиоеки
 #include <QDebug>
@@ -30,7 +30,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QSound *obj;
     QPropertyAnimation *animation;
 };
 
