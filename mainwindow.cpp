@@ -10,19 +10,34 @@ MainWindow::MainWindow(QWidget *parent) :
     obj = new QSound("cutApple.wav");
     animation = new QPropertyAnimation(ui->slidingMenu, "geometry");
     //пример работы с БД
-    DB_Manager* dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
+    /*DB_Manager* dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
     QStringList tables = dbase->getListTables(); //получение списка существующих таблиц (должно быть 3 "equipment", "items", "sqlite_sequence")
     dbase->createTables(); //если (БД удалялась и) какой то из "equipment", "items" не хватает, создать их
     dbase->insertIntoItems("apple","pic1.jpg"); //добавление элемента в таблицу Items
-    dbase->insertIntoEquipment(2,1,5); //добавление элемента в таблицу Equipment
+    dbase->insertIntoEquipment(1,13,5); //добавление элемента в таблицу Equipment
+    dbase->insertIntoEquipment(2,13,4); //добавление элемента в таблицу Equipment
     dbase->insertIntoItems("orange","pic2,png");
     //dbase->deleteFromItems("orange"); //удаление из Items
-    QStringList items = dbase->getAllItems(); //получение всего списка таблиц
-    qDebug() << items;
-
+    QStringList items = dbase->getItems(); //получение всего списка предметов Items
+    items = dbase->getItems("orange"); //получение элементов из Items с name = orange
+    items = dbase->getItems(1); //получения элемента из Items с id = 1
+    dbase->updateItems("apple","pic_apple.png"); // изменения pic по name
+    items = dbase->getItems();
+    dbase->updateItems(14,"potato"); // изменения name по id
+    items = dbase->getItems();
+    dbase->updateItems(14,"orange","pic2.png"); // изменения по id для name и pic
+    items = dbase->getItems();
+    //dbase->eraseItems(); //удаление всех элементов из Items
+    items = dbase->getItems();
+    QStringList inventory = dbase->getEquipment();//получение всего списка equipment
+    inventory = dbase->getEquipment(2); //получения элемента из Equipment с id = 2
+    dbase->updateEquipment(1,7); // изменение count по id
+    inventory = dbase->getEquipment();
+    dbase->updateEquipment(2,"orange",3); //
+    inventory = dbase->getEquipment();
+    dbase->eraseEquipment(); //удаление всех элементов из Equipment
+    inventory = dbase->getEquipment();*/
     //конец
-
-
 }
 
 MainWindow::~MainWindow()
