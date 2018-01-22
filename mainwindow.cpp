@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "db_manager.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     animation = new QPropertyAnimation(ui->slidingMenu, "geometry");
     //пример работы с БД
-    DB_Manager* dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
+    /*DB_Manager* dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
     QStringList tables = dbase->getListTables(); //получение списка существующих таблиц (должно быть 3 "equipment", "items", "sqlite_sequence")
 //    dbase->createTables(); //если (БД удалялась и) какой то из "equipment", "items" не хватает, создать их
 //    dbase->insertIntoItems("apple","pic1.jpg"); //добавление элемента в таблицу Items
@@ -57,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     qDebug() <<"List of items: " << items;
     QStringList inventory = dbase->getEquipment();
     qDebug() <<"List of equipment: " << items;
+
     //конец
 }
 

@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/appleIcon.png</file>
+        <file>resources/cutapple.wav</file>
     </qresource>
 </RCC>
