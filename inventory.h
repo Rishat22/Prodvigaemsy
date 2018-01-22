@@ -14,7 +14,6 @@ private slots:
 private:
     const int rows = 3;
     const int cols = 3;
-    int currentCount;
     QSound *obj;
     InventoryItem *startDrop_;
     InventoryItem *endDrop_;

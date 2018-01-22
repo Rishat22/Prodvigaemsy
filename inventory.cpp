@@ -28,7 +28,14 @@ Inventory::Inventory(QWidget *parent) :
     //this->setDropIndicatorShown(true);
     startDrop_ = new InventoryItem();
     endDrop_ = new InventoryItem();
-    currentCount = 0;
+
+    for(int row = 0; row < this->rowCount(); row++)
+    {
+        for(int col = 0; col < this->columnCount(); col++)
+        {
+            this->setItem(row, col, new InventoryItem());
+        }
+    }
 }
 
 
@@ -40,7 +47,7 @@ void Inventory::mousePressEvent(QMouseEvent *event)
 
         InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
         startDrop_ = invItemTarget;
-        if(!invItemTarget)
+        if(!invItemTarget || invItemTarget->getCount() == 0)
             return;
 
         QByteArray itemData;
