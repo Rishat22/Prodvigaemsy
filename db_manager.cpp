@@ -206,6 +206,37 @@ bool DB_Manager::insertIntoEquipment(const int &id, const int &id_item, const in
     }
 }
 
+bool DB_Manager::insertIntoEquipment(const int &id, const QString &itemsname, const int &count)
+{
+    if (id < 1 || itemsname.isEmpty() || count < 0)
+        return false;
+    int id_item = 0;
+    QSqlQuery query(db);
+    query.prepare("SELECT id FROM items WHERE name = (:itemsname)");
+    query.bindValue(":itemsname", itemsname);
+    if (!query.exec()) {
+        qDebug() << "get Items error: " <<db.lastError().text();
+    } else {
+        QSqlRecord rec = query.record();
+        int id = rec.indexOf("id");
+        while (query.next())
+        {
+            id_item = query.value(id).toInt();
+        }
+    }
+    query.prepare("INSERT INTO equipment (id, id_item, count) VALUES (:id, :id_item, :count)");
+    query.bindValue(":id", id);
+    query.bindValue(":id_item", id_item);
+    query.bindValue(":count", count);
+    if(query.exec())
+        return true;
+    else
+    {
+        qDebug() << "Add Equipment error: " << query.lastError();
+        return false;
+    }
+}
+
 bool DB_Manager::updateItems(const int &id, const QString &itemsname, const QString &path)
 {
     if(itemsname.isEmpty() == true || id < 1)
