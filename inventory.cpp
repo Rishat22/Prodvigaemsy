@@ -19,7 +19,7 @@ Inventory::Inventory(QWidget *parent) :
     connect(this, SIGNAL(cellDropped(int,int)), this, SLOT(clearCell(int,int)));
     this->verticalHeader()->hide();
     this->horizontalHeader()->hide();
-    obj = new QSound("cutApple.wav");
+    obj = new QSound(":/resources/cutapple.wav");
     //this->setDragEnabled(true);
     this->setSelectionMode(QAbstractItemView::SingleSelection);
     this->setDragDropMode(QAbstractItemView::DragDrop);
@@ -36,6 +36,9 @@ Inventory::Inventory(QWidget *parent) :
             this->setItem(row, col, new InventoryItem());
         }
     }
+    //Data_base:
+    DB_Manager* dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
+    dbase->createTables(); //если (БД удалялась и) какой то из "equipment", "items" не хватает, создать их
 }
 
 

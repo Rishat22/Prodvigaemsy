@@ -17,27 +17,41 @@ Apples::Apples(QWidget *parent) :
     this->setDropIndicatorShown(true);
     this->setAcceptDrops(true);
     this->setDropIndicatorShown(true);
+    startDrop_ = new InventoryItem();
+    endDrop_ = new InventoryItem();
+
+    nameThisObject = "Apple";
+    appleIconPath = ":/resources/appleIcon.png";
+
+    //Data_base:
+    DB_Manager* dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
+    dbase->createTables(); //если (БД удалялась и) какой то из "equipment", "items" не хватает, создать их
+    dbase->insertIntoItems(nameThisObject,appleIconPath); //добавление элемента в таблицу Items
 }
 
 void Apples::mousePressEvent(QMouseEvent *event)
 {
-    QTableWidgetItem *targetItem = itemAt(event->pos());
+    if (event->button() == Qt::LeftButton)
+    {
+        QTableWidgetItem *targetItem = itemAt(event->pos());
 
-    InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
-    if(!invItemTarget)
-        return;
+        InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
+        startDrop_ = invItemTarget;
+        if(!invItemTarget)
+            return;
 
-    QByteArray itemData;
-    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream << 100;
+        QByteArray itemData;
+        QDataStream dataStream(&itemData, QIODevice::WriteOnly);
+        dataStream << 100;
 
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setText(QString::number(invItemTarget->getCount()));
+        QMimeData *mimeData = new QMimeData;
+        mimeData->setText(QString::number(invItemTarget->getCount()));
 
-    QDrag *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
+        QDrag *drag = new QDrag(this);
+        drag->setMimeData(mimeData);
 
-    Qt::DropAction dropAction = drag->start(Qt::MoveAction);
+        Qt::DropAction dropAction = drag->start(Qt::MoveAction);
+    }
 }
 
 void Apples::dragEnterEvent(QDragEnterEvent *event)
@@ -69,11 +83,18 @@ void Apples::dropEvent(QDropEvent *event)
     QTableWidgetItem *targetItem = itemAt(event->pos());
 
     InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
+    endDrop_ = invItemTarget;
+    if(startDrop_ != endDrop_)
+    {
+        invItemTarget->increaseCount(event->mimeData()->text().toInt());
 
-    invItemTarget->increaseCount(event->mimeData()->text().toInt());
+        invItemTarget->setIcon_();
+        invItemTarget->setText(QString::number(invItemTarget->getCount()));
+        event->acceptProposedAction();
+    }
+    else
+        event->ignore();
 
-    invItemTarget->setText(QString::number(invItemTarget->getCount()));
-    event->acceptProposedAction();
 
 
 }

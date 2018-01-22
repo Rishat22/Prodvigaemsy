@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "db_manager.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -44,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent) :
     dbase->updateEquipment(2,"orange",3); //
     inventory = dbase->getEquipment();
     dbase->eraseEquipment(); //удаление всех элементов из Equipment
+    inventory = dbase->getEquipment();
+    dbase->insertIntoEquipment(8,"apple",33);
     inventory = dbase->getEquipment();*/
     //конец
 }

@@ -46,4 +46,3 @@ FORMS += \
 
 RESOURCES += \
     resources.qrc
-
