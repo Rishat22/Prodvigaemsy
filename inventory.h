@@ -4,6 +4,7 @@
 #include <QtWidgets>
 #include <QSound> //аудио сопровождение
 #include "inventoryitem.h"
+#include "db_manager.h"
 class Inventory : public QTableWidget
 {
     Q_OBJECT

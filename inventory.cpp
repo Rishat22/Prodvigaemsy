@@ -29,6 +29,10 @@ Inventory::Inventory(QWidget *parent) :
     startDrop_ = new InventoryItem();
     endDrop_ = new InventoryItem();
     currentCount = 0;
+
+    //Data_base:
+    DB_Manager* dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
+    dbase->createTables(); //если (БД удалялась и) какой то из "equipment", "items" не хватает, создать их
 }
 
 
