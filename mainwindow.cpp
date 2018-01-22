@@ -8,15 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    for(int row = 0; row < ui->inventory->rowCount(); row++)
-    {
-        for(int col = 0; col < ui->inventory->columnCount(); col++)
-        {
-            ui->inventory->setItem(row, col, new InventoryItem());
-        }
-    }
-
-    ui->apples->setItem(0,0, new InventoryItem());
+   //R ui->apples->setItem(0,0, new InventoryItem());
 
     InventoryItem *originItem = new InventoryItem();
     originItem->setCount(1);
@@ -26,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     animation = new QPropertyAnimation(ui->slidingMenu, "geometry");
     //пример работы с БД
-
     /*DB_Manager* dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
     QStringList tables = dbase->getListTables(); //получение списка существующих таблиц (должно быть 3 "equipment", "items", "sqlite_sequence")
     dbase->createTables(); //если (БД удалялась и) какой то из "equipment", "items" не хватает, создать их
@@ -53,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent) :
     dbase->updateEquipment(2,"orange",3); //
     inventory = dbase->getEquipment();
     dbase->eraseEquipment(); //удаление всех элементов из Equipment
+    inventory = dbase->getEquipment();
+    dbase->insertIntoEquipment(8,"apple",33);
     inventory = dbase->getEquipment();*/
     //конец
 }

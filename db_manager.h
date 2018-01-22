@@ -18,6 +18,7 @@ public:
     void createTables();
     bool insertIntoItems(const QString& itemsname, const QString& path);
     bool insertIntoEquipment(const int& id, const int& id_item, const int& count);
+    bool insertIntoEquipment(const int& id, const QString& itemsname, const int& count);
     bool updateItems(const int& id, const QString& itemsname, const QString& path);
     bool updateItems(const int& id, const QString& itemsname);
     bool updateItems(const QString& itemsname, const QString& path);

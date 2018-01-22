@@ -28,8 +28,14 @@ Inventory::Inventory(QWidget *parent) :
     //this->setDropIndicatorShown(true);
     startDrop_ = new InventoryItem();
     endDrop_ = new InventoryItem();
-    currentCount = 0;
 
+    for(int row = 0; row < this->rowCount(); row++)
+    {
+        for(int col = 0; col < this->columnCount(); col++)
+        {
+            this->setItem(row, col, new InventoryItem());
+        }
+    }
     //Data_base:
     DB_Manager* dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
     dbase->createTables(); //если (БД удалялась и) какой то из "equipment", "items" не хватает, создать их
@@ -44,7 +50,7 @@ void Inventory::mousePressEvent(QMouseEvent *event)
 
         InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
         startDrop_ = invItemTarget;
-        if(!invItemTarget)
+        if(!invItemTarget || invItemTarget->getCount() == 0)
             return;
 
         QByteArray itemData;
