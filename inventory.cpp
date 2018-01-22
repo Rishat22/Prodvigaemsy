@@ -19,7 +19,7 @@ Inventory::Inventory(QWidget *parent) :
     connect(this, SIGNAL(cellDropped(int,int)), this, SLOT(clearCell(int,int)));
     this->verticalHeader()->hide();
     this->horizontalHeader()->hide();
-    obj = new QSound("cutApple.wav");
+    obj = new QSound(":/resources/cutapple.wav");
     //this->setDragEnabled(true);
     this->setSelectionMode(QAbstractItemView::SingleSelection);
     this->setDragDropMode(QAbstractItemView::DragDrop);
