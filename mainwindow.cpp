@@ -8,15 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    for(int row = 0; row < ui->inventory->rowCount(); row++)
-    {
-        for(int col = 0; col < ui->inventory->columnCount(); col++)
-        {
-            ui->inventory->setItem(row, col, new InventoryItem());
-        }
-    }
-
-    ui->apples->setItem(0,0, new InventoryItem());
+   //R ui->apples->setItem(0,0, new InventoryItem());
 
     InventoryItem *originItem = new InventoryItem();
     originItem->setCount(1);
