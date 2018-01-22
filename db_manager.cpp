@@ -19,6 +19,11 @@ void DB_Manager::open(const QString& path)
     }
 }
 
+DB_Manager::~DB_Manager()
+{
+    db.close();
+}
+
 QStringList DB_Manager::getListTables()
 {
     if(db.isOpen())
@@ -26,7 +31,7 @@ QStringList DB_Manager::getListTables()
     return QStringList();
 }
 
-QStringList DB_Manager::getAllItems()
+QStringList DB_Manager::getItems()
 {
     QStringList result;
     QSqlQuery query;
@@ -35,7 +40,55 @@ QStringList DB_Manager::getAllItems()
     } else {
         QSqlRecord rec = query.record();
         int id = rec.indexOf("id");
-        int name =rec.indexOf("name");
+        int name = rec.indexOf("name");
+        int pic = rec.indexOf("pic");
+
+        while (query.next())
+        {
+            result << query.value(id).toString();
+            result << query.value(name).toString();
+            result << query.value(pic).toString();
+        }
+    }
+    return result;
+}
+
+QStringList DB_Manager::getItems(const int& id)
+{
+    QStringList result;
+    QSqlQuery query;
+    query.prepare("SELECT * FROM items WHERE id = (:id)");
+    query.bindValue(":id", id);
+    if (!query.exec()) {
+        qDebug() << "get Items error: " <<db.lastError().text();
+    } else {
+        QSqlRecord rec = query.record();
+        int id = rec.indexOf("id");
+        int name = rec.indexOf("name");
+        int pic = rec.indexOf("pic");
+
+        while (query.next())
+        {
+            result << query.value(id).toString();
+            result << query.value(name).toString();
+            result << query.value(pic).toString();
+        }
+    }
+    return result;
+}
+
+QStringList DB_Manager::getItems(const QString &itemsname)
+{
+    QStringList result;
+    QSqlQuery query;
+    query.prepare("SELECT * FROM items WHERE name = (:itemsname)");
+    query.bindValue(":itemsname", itemsname);
+    if (!query.exec()) {
+        qDebug() << "get Items error: " <<db.lastError().text();
+    } else {
+        QSqlRecord rec = query.record();
+        int id = rec.indexOf("id");
+        int name = rec.indexOf("name");
         int pic = rec.indexOf("pic");
 
         while (query.next())
@@ -51,12 +104,43 @@ QStringList DB_Manager::getAllItems()
 QStringList DB_Manager::getEquipment()
 {
     QStringList result;
-    QSqlQuery query("SELECT * FROM equipment");
-    int id = query.record().indexOf("id");
-    while (query.next())
-    {
-       QString str = query.value(id).toString();
-       result << str;
+    QSqlQuery query;
+    query.prepare("SELECT equipment.id, items.name, equipment.count FROM equipment INNER JOIN items ON equipment.id_item = items.id");
+    if(query.exec()) {
+        QSqlRecord rec = query.record();
+        int id = rec.indexOf("id");
+        int name = rec.indexOf("name");
+        int count = rec.indexOf("count");
+        while (query.next())
+        {
+            result << query.value(id).toString();
+            result << query.value(name).toString();
+            result << query.value(count).toString();
+        }
+    } else {
+        qDebug() << "get Equipment error: " <<db.lastError().text();
+    }
+    return result;
+}
+
+QStringList DB_Manager::getEquipment(const int &id)
+{
+    QStringList result;
+    QSqlQuery query;
+    query.prepare("SELECT equipment.id, items.name, equipment.count FROM equipment INNER JOIN items ON equipment.id_item = items.id WHERE equipment.id == :id");
+    query.bindValue(":id", id);
+    if(query.exec()) {
+        QSqlRecord rec = query.record();
+        int name = rec.indexOf("name");
+        int count = rec.indexOf("count");
+        while (query.next())
+        {
+            result << QString::number(id);
+            result << query.value(name).toString();
+            result << query.value(count).toString();
+        }
+    } else {
+        qDebug() << "get Equipment error: " <<db.lastError().text();
     }
     return result;
 }
@@ -122,6 +206,106 @@ bool DB_Manager::insertIntoEquipment(const int &id, const int &id_item, const in
     }
 }
 
+bool DB_Manager::updateItems(const int &id, const QString &itemsname, const QString &path)
+{
+    if(itemsname.isEmpty() == true || id < 1)
+        return false;
+    QSqlQuery query(db);
+    query.prepare("UPDATE items SET name = (:itemsname), pic = (:path) WHERE id = (:id)");
+    query.bindValue(":itemsname", itemsname);
+    query.bindValue(":path", path);
+    query.bindValue(":id", id);
+    if(!query.exec())
+    {
+        qDebug() << "update Items error: " << query.lastError();
+        return false;
+    }
+    else
+        return true;
+}
+
+bool DB_Manager::updateItems(const int &id, const QString &itemsname)
+{
+    if(itemsname.isEmpty() == true || id < 1)
+        return false;
+    QSqlQuery query(db);
+    query.prepare("UPDATE items SET name = (:itemsname) WHERE id = (:id)");
+    query.bindValue(":itemsname", itemsname);
+    query.bindValue(":id", id);
+    if(!query.exec())
+    {
+        qDebug() << "update Items error: " << query.lastError();
+        return false;
+    }
+    else
+        return true;
+}
+
+bool DB_Manager::updateItems(const QString &itemsname, const QString &path)
+{
+    if(itemsname.isEmpty() == true)
+        return false;
+    QSqlQuery query(db);
+    query.prepare("UPDATE items SET pic = (:path) WHERE name = (:itemsname)");
+    query.bindValue(":path", path);
+    query.bindValue(":itemsname", itemsname);
+    if(!query.exec())
+    {
+        qDebug() << "update Items error: " << query.lastError();
+        return false;
+    }
+    else
+        return true;
+}
+
+bool DB_Manager::updateEquipment(const int &id, const int &newcount)
+{
+    if(newcount < 0 || id < 1)
+        return false;
+    QSqlQuery query(db);
+    query.prepare("UPDATE equipment SET count = (:newcount) WHERE id = (:id)");
+    query.bindValue(":newcount", newcount);
+    query.bindValue(":id", id);
+    if(!query.exec())
+    {
+        qDebug() << "update Equipment error: " << query.lastError();
+        return false;
+    }
+    else
+        return true;
+}
+
+bool DB_Manager::updateEquipment(const int &id,const QString &itemsname, const int &newcount)
+{
+    if(newcount < 0 || id < 1 || itemsname.isEmpty() == true)
+        return false;
+    int id_item = 0;
+    QSqlQuery query(db);
+    query.prepare("SELECT id FROM items WHERE name = (:itemsname)");
+    query.bindValue(":itemsname", itemsname);
+    if (!query.exec()) {
+        qDebug() << "get Items error: " <<db.lastError().text();
+    } else {
+        QSqlRecord rec = query.record();
+        int id = rec.indexOf("id");
+        while (query.next())
+        {
+            id_item = query.value(id).toInt();
+        }
+    }
+    query.prepare("UPDATE equipment SET id_item = (:id_item), count = (:newcount) WHERE id = (:id)");
+    query.bindValue(":id_item", id_item);
+    query.bindValue(":newcount", newcount);
+    query.bindValue(":id", id);
+    if(!query.exec())
+    {
+        qDebug() << "update Equipment error: " << query.lastError();
+        return false;
+    }
+    else
+        return true;
+}
+
 bool DB_Manager::deleteFromItems(const QString &itemsname)
 {
     if(itemsname.isEmpty() == true)
@@ -152,6 +336,30 @@ bool DB_Manager::deleteFromEquipment(const int &id)
     }
     else
         return true;
+}
+
+bool DB_Manager::eraseItems()
+{
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM items");
+    if(query.exec()) {
+        return true;
+    } else {
+        qDebug() << "erase Items error: " << query.lastError();
+        return false;
+    }
+}
+
+bool DB_Manager::eraseEquipment()
+{
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM equipment");
+    if(query.exec()) {
+        return true;
+    } else {
+        qDebug() << "erase Equipment error: " << query.lastError();
+        return false;
+    }
 }
 
 
