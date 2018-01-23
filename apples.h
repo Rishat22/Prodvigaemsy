@@ -22,6 +22,9 @@ protected:
     void dropEvent(QDropEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
+
+signals:
+    void externalItem();
 };
 
 #endif // APPLES_H

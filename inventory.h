@@ -14,13 +14,15 @@ public:
 
 private slots:
     void clearCell(int row, int col);
+    void changeExternalItemValue();
 private:
     const int rows_ = 3;
     const int cols_ = 3;
-    QSound *obj;
+    QSound *sound;
     InventoryItem *startDrop;
     InventoryItem *endDrop;
     DB_Manager* dbase;
+    bool externalItem;
 signals:
     void cellDropped(int, int);
 protected:

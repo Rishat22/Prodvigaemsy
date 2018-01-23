@@ -28,8 +28,10 @@ Apples::Apples(QWidget *parent) :
 
 void Apples::mousePressEvent(QMouseEvent *event)
 {
+
     if (event->button() == Qt::LeftButton)
     {
+        emit externalItem();
         QTableWidgetItem *targetItem = itemAt(event->pos());
 
         InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
@@ -67,6 +69,7 @@ void Apples::dragMoveEvent(QDragMoveEvent * event){}
 
 void Apples::dropEvent(QDropEvent *event)
 {
+
     QTableWidgetItem *targetItem = itemAt(event->pos());
 
     InventoryItem *invItemTarget  = (InventoryItem*)targetItem;

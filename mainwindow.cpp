@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
-
+    connect(ui->apples, SIGNAL(externalItem()), ui->inventory, SLOT(changeExternalItemValue()));
     InventoryItem *originItem = new InventoryItem();
     originItem->setCount(1);
     originItem->setIcon_();
@@ -27,22 +27,22 @@ MainWindow::MainWindow(QWidget *parent) :
     animation = new QPropertyAnimation(ui->slidingMenu, "geometry");
 
     //create data base
-//    QStringList tables = dbase->getListTables();
-//    qDebug() <<"List of tables: " <<tables;
-//    QStringList items = dbase->getItems();
-//    qDebug() <<"List of items: " << items;
-//    QStringList inventory = dbase->getEquipment();
-//    qDebug() <<"List of equipment: " << inventory;
+    //    QStringList tables = dbase->getListTables();
+    //    qDebug() <<"List of tables: " <<tables;
+    //    QStringList items = dbase->getItems();
+    //    qDebug() <<"List of items: " << items;
+    //    QStringList inventory = dbase->getEquipment();
+    //    qDebug() <<"List of equipment: " << inventory;
 }
 
 MainWindow::~MainWindow()
 {
-//    QStringList tables = dbase->getListTables();
-//    qDebug() <<"List of tables: " <<tables;
-//    QStringList items = dbase->getItems();
-//    qDebug() <<"List of items: " << items;
-//    QStringList inventory = dbase->getEquipment();
-//    qDebug() <<"List of equipment: " << inventory;
+    //    QStringList tables = dbase->getListTables();
+    //    qDebug() <<"List of tables: " <<tables;
+    //    QStringList items = dbase->getItems();
+    //    qDebug() <<"List of items: " << items;
+    //    QStringList inventory = dbase->getEquipment();
+    //    qDebug() <<"List of equipment: " << inventory;
 
     delete ui;
     dbase->eraseEquipment();
@@ -64,6 +64,15 @@ void MainWindow::on_start_clicked()
     animation->setEndValue(QRect(0, -50, 100, 30));
 
     animation->start();
+
+    Inventory *inv = new Inventory();
+    for(int row = 0; row < ui->inventory->rowCount(); row++)
+    {
+        for(int col = 0; col < ui->inventory->columnCount(); col++)
+        {
+            ui->inventory->setItem(row, col, new InventoryItem());
+        }
+    }
 }
 
 void MainWindow::on_outSlidingMenu_clicked()
@@ -72,5 +81,7 @@ void MainWindow::on_outSlidingMenu_clicked()
     animation->setStartValue(QRect(0, -50, 100, 30));
     animation->setEndValue(QRect(0, 0, 100, 30));
     animation->start();
+    ui->inventory->setEnabled(false);
+    ui->apples->setEnabled(false);
 
 }

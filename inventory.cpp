@@ -5,7 +5,6 @@ Inventory::Inventory(QWidget *parent) :
 {
     this->setRowCount(rows_);
     this->setColumnCount(cols_);
-
     for(int i = 0; i < rows_; i++)
     {
 
@@ -17,15 +16,13 @@ Inventory::Inventory(QWidget *parent) :
     this->verticalScrollBar()->hide();
     // inventoryItem = new InventoryItem();
     connect(this, SIGNAL(cellDropped(int,int)), this, SLOT(clearCell(int,int)));
+
     this->verticalHeader()->hide();
     this->horizontalHeader()->hide();
-    obj = new QSound(":/resources/cutapple.wav");
-    //this->setDragEnabled(true);
+    sound = new QSound(":/resources/cutapple.wav");
     this->setSelectionMode(QAbstractItemView::SingleSelection);
     this->setDragDropMode(QAbstractItemView::DragDrop);
     this->setDefaultDropAction(Qt::DropAction::MoveAction);
-    //this->setAcceptDrops(true);
-    //this->setDropIndicatorShown(true);
     startDrop = new InventoryItem();
     endDrop = new InventoryItem();
 
@@ -36,8 +33,10 @@ Inventory::Inventory(QWidget *parent) :
             this->setItem(row, col, new InventoryItem());
         }
     }
+    externalItem = false;
     //Data_base:
     dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
+
 
 }
 
@@ -51,7 +50,6 @@ void Inventory::mousePressEvent(QMouseEvent *event)
         QTableWidgetItem *targetItem = itemAt(event->pos());
 
         InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
-
         if(!targetItem || invItemTarget->getCount() == 0)
             return;
         else
@@ -76,14 +74,15 @@ void Inventory::mousePressEvent(QMouseEvent *event)
 
         QTableWidgetItem *targetItem = itemAt(event->pos());
         InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
+        int beforeDecreaseCount = invItemTarget->getCount();
         invItemTarget->decreaseCout();
         invItemTarget->setText(QString::number(invItemTarget->getCount()));
         if(invItemTarget->getCount() == 0)
         {
-            obj->play();
+            if(beforeDecreaseCount != 0)
+                sound->play();
             dbase->updateEquipment((invItemTarget->row()*3) + (invItemTarget->column()+1), 0);
             clearCell(invItemTarget->row(),invItemTarget->column());
-
         }
         dbase->updateEquipment((invItemTarget->row()*3) + (invItemTarget->column()+1), invItemTarget->getCount());
     }
@@ -92,8 +91,6 @@ void Inventory::clearCell(int row, int col)
 {
     InventoryItem* item = new InventoryItem(); //Вот здесь непонятно!
     this->setItem(row,col, item);
-    //dbase->insertIntoEquipment((row*3)+(col),"Apple",0);
-    //emit ;
 }
 
 void Inventory::dragEnterEvent(QDragEnterEvent *event)
@@ -109,26 +106,43 @@ void Inventory::dragEnterEvent(QDragEnterEvent *event)
 
 void Inventory::dragMoveEvent(QDragMoveEvent * event){}
 
-
 void Inventory::dropEvent(QDropEvent *event)
 {
+
     QTableWidgetItem *targetItem = itemAt(event->pos());
 
     InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
     endDrop = invItemTarget;
-    if(startDrop != endDrop)
+
+    if(startDrop != endDrop && externalItem == false)
     {
         invItemTarget->increaseCount(event->mimeData()->text().toInt());
 
         invItemTarget->setIcon_();
         invItemTarget->setText(QString::number(invItemTarget->getCount()));
         event->acceptProposedAction();
-        dbase->updateEquipment((startDrop->row()*3) + (startDrop->column()+1), 0);
+        dbase->updateEquipment((startDrop->row() * 3) + (startDrop->column() + 1), 0);
         emit cellDropped(startDrop->row(),startDrop->column());
         dbase->updateEquipment((endDrop->row()*3) + (endDrop->column()+1), endDrop->getCount());
+        externalItem = false;
     }
+
+    else if(startDrop != endDrop && externalItem == true)
+    {
+        invItemTarget->increaseCount(event->mimeData()->text().toInt());
+        invItemTarget->setIcon_();
+        invItemTarget->setText(QString::number(invItemTarget->getCount()));
+        event->acceptProposedAction();
+        dbase->updateEquipment((endDrop->row()*3) + (endDrop->column()+1), endDrop->getCount());
+        externalItem = false;
+    }
+
     else
         event->ignore();
 }
 
 
+void Inventory::changeExternalItemValue()
+{
+    externalItem = true;
+}
