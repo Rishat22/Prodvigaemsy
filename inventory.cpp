@@ -3,17 +3,15 @@
 Inventory::Inventory(QWidget *parent) :
     QTableWidget(parent)
 {
-    this->setRowCount(rows);
-    this->setColumnCount(cols);
+    this->setRowCount(rows_);
+    this->setColumnCount(cols_);
 
-    for(int i = 0; i < rows; i++)
+    for(int i = 0; i < rows_; i++)
     {
 
         this->setRowHeight(i, 154);
         this->setColumnWidth(i, 154);
     }
-
-
 
     this->horizontalScrollBar()->hide();
     this->verticalScrollBar()->hide();
@@ -28,8 +26,8 @@ Inventory::Inventory(QWidget *parent) :
     this->setDefaultDropAction(Qt::DropAction::MoveAction);
     //this->setAcceptDrops(true);
     //this->setDropIndicatorShown(true);
-    startDrop_ = new InventoryItem();
-    endDrop_ = new InventoryItem();
+    startDrop = new InventoryItem();
+    endDrop = new InventoryItem();
 
     for(int row = 0; row < this->rowCount(); row++)
     {
@@ -43,10 +41,7 @@ Inventory::Inventory(QWidget *parent) :
 
 }
 
-Inventory::~Inventory()
-{
-
-}
+Inventory::~Inventory(){}
 
 
 void Inventory::mousePressEvent(QMouseEvent *event)
@@ -61,7 +56,7 @@ void Inventory::mousePressEvent(QMouseEvent *event)
             return;
         else
         {
-            startDrop_ = invItemTarget;
+            startDrop = invItemTarget;
             QByteArray itemData;
             QDataStream dataStream(&itemData, QIODevice::WriteOnly);
             dataStream << 100;
@@ -103,7 +98,6 @@ void Inventory::clearCell(int row, int col)
 
 void Inventory::dragEnterEvent(QDragEnterEvent *event)
 {
-    qDebug() << event->mimeData()->text();
     if(event->mimeData()->hasText())
     {
         event->setDropAction(Qt::MoveAction);
@@ -113,10 +107,7 @@ void Inventory::dragEnterEvent(QDragEnterEvent *event)
         event->ignore();
 }
 
-void Inventory::dragMoveEvent(QDragMoveEvent * event)
-{
-
-}
+void Inventory::dragMoveEvent(QDragMoveEvent * event){}
 
 
 void Inventory::dropEvent(QDropEvent *event)
@@ -124,25 +115,17 @@ void Inventory::dropEvent(QDropEvent *event)
     QTableWidgetItem *targetItem = itemAt(event->pos());
 
     InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
-    endDrop_ = invItemTarget;
-    if(startDrop_ != endDrop_)
+    endDrop = invItemTarget;
+    if(startDrop != endDrop)
     {
         invItemTarget->increaseCount(event->mimeData()->text().toInt());
 
         invItemTarget->setIcon_();
         invItemTarget->setText(QString::number(invItemTarget->getCount()));
         event->acceptProposedAction();
-//        qDebug()<<"startDrop_ "<<startDrop_->row()<<(startDrop_->column());
-        qDebug()<<"startDrop_ "<<(startDrop_->row()*3) + (startDrop_->column()+1);
-
-        dbase->updateEquipment((startDrop_->row()*3) + (startDrop_->column()+1), 0);
-
-        emit cellDropped(startDrop_->row(),startDrop_->column());
-        qDebug()<<"endDrop_ "<<(endDrop_->row()*3) + (endDrop_->column()+1);
-
-        dbase->updateEquipment((endDrop_->row()*3) + (endDrop_->column()+1), endDrop_->getCount());
-
-
+        dbase->updateEquipment((startDrop->row()*3) + (startDrop->column()+1), 0);
+        emit cellDropped(startDrop->row(),startDrop->column());
+        dbase->updateEquipment((endDrop->row()*3) + (endDrop->column()+1), endDrop->getCount());
     }
     else
         event->ignore();

@@ -15,11 +15,11 @@ public:
 private slots:
     void clearCell(int row, int col);
 private:
-    const int rows = 3;
-    const int cols = 3;
+    const int rows_ = 3;
+    const int cols_ = 3;
     QSound *obj;
-    InventoryItem *startDrop_;
-    InventoryItem *endDrop_;
+    InventoryItem *startDrop;
+    InventoryItem *endDrop;
     DB_Manager* dbase;
 signals:
     void cellDropped(int, int);

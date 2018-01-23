@@ -53,7 +53,6 @@ void Apples::mousePressEvent(QMouseEvent *event)
 
 void Apples::dragEnterEvent(QDragEnterEvent *event)
 {
-  qDebug() << event->mimeData()->text();
     if(event->mimeData()->hasText())
     {
         event->setDropAction(Qt::MoveAction);
@@ -63,16 +62,7 @@ void Apples::dragEnterEvent(QDragEnterEvent *event)
         event->ignore();
 }
 
-void Apples::dragMoveEvent(QDragMoveEvent * event)
-{
-//    if(event->mimeData()->hasFormat("iconPath"))
-//    {
-//        event->setDropAction(Qt::MoveAction);
-//        event->accept();
-//    }
-//    else
-//        event->ignore();
-}
+void Apples::dragMoveEvent(QDragMoveEvent * event){}
 
 
 void Apples::dropEvent(QDropEvent *event)
