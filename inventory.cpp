@@ -56,21 +56,24 @@ void Inventory::mousePressEvent(QMouseEvent *event)
         QTableWidgetItem *targetItem = itemAt(event->pos());
 
         InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
-        startDrop_ = invItemTarget;
-        if(!invItemTarget || invItemTarget->getCount() == 0)
+
+        if(!targetItem || invItemTarget->getCount() == 0)
             return;
+        else
+        {
+            startDrop_ = invItemTarget;
+            QByteArray itemData;
+            QDataStream dataStream(&itemData, QIODevice::WriteOnly);
+            dataStream << 100;
 
-        QByteArray itemData;
-        QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-        dataStream << 100;
+            QMimeData *mimeData = new QMimeData;
+            mimeData->setText(QString::number(invItemTarget->getCount()));
 
-        QMimeData *mimeData = new QMimeData;
-        mimeData->setText(QString::number(invItemTarget->getCount()));
+            QDrag *drag = new QDrag(this);
+            drag->setMimeData(mimeData);
 
-        QDrag *drag = new QDrag(this);
-        drag->setMimeData(mimeData);
-
-        Qt::DropAction dropAction = drag->start(Qt::MoveAction);
+            Qt::DropAction dropAction = drag->start(Qt::MoveAction);
+        }
 
     }
     if (event->button() == Qt::RightButton)
