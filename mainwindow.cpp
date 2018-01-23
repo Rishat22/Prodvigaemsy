@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QStringList items = dbase->getItems();
     qDebug() <<"List of items: " << items;
     QStringList inventory = dbase->getEquipment();
-    qDebug() <<"List of equipment: " << items;
+    qDebug() <<"List of equipment: " << items;*/
 
     //конец
 
