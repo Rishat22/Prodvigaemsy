@@ -13,9 +13,11 @@ Inventory::Inventory(QWidget *parent) :
         this->setColumnWidth(i, 154);
     }
 
+
+
     this->horizontalScrollBar()->hide();
     this->verticalScrollBar()->hide();
-
+    // inventoryItem = new InventoryItem();
     connect(this, SIGNAL(cellDropped(int,int)), this, SLOT(clearCell(int,int)));
     this->verticalHeader()->hide();
     this->horizontalHeader()->hide();
@@ -37,8 +39,13 @@ Inventory::Inventory(QWidget *parent) :
         }
     }
     //Data_base:
-    DB_Manager* dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
-    dbase->createTables(); //если (БД удалялась и) какой то из "equipment", "items" не хватает, создать их
+    dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
+
+}
+
+Inventory::~Inventory()
+{
+
 }
 
 
@@ -76,17 +83,21 @@ void Inventory::mousePressEvent(QMouseEvent *event)
         if(invItemTarget->getCount() == 0)
         {
             obj->play();
+            dbase->updateEquipment((invItemTarget->row()*3) + (invItemTarget->column()+1), 0);
             clearCell(invItemTarget->row(),invItemTarget->column());
+
         }
+        dbase->updateEquipment((invItemTarget->row()*3) + (invItemTarget->column()+1), invItemTarget->getCount());
     }
 }
 void Inventory::clearCell(int row, int col)
 {
     InventoryItem* item = new InventoryItem(); //Вот здесь непонятно!
     this->setItem(row,col, item);
-
+    //dbase->insertIntoEquipment((row*3)+(col),"Apple",0);
     //emit ;
 }
+
 void Inventory::dragEnterEvent(QDragEnterEvent *event)
 {
     qDebug() << event->mimeData()->text();
@@ -118,7 +129,17 @@ void Inventory::dropEvent(QDropEvent *event)
         invItemTarget->setIcon_();
         invItemTarget->setText(QString::number(invItemTarget->getCount()));
         event->acceptProposedAction();
+//        qDebug()<<"startDrop_ "<<startDrop_->row()<<(startDrop_->column());
+        qDebug()<<"startDrop_ "<<(startDrop_->row()*3) + (startDrop_->column()+1);
+
+        dbase->updateEquipment((startDrop_->row()*3) + (startDrop_->column()+1), 0);
+
         emit cellDropped(startDrop_->row(),startDrop_->column());
+        qDebug()<<"endDrop_ "<<(endDrop_->row()*3) + (endDrop_->column()+1);
+
+        dbase->updateEquipment((endDrop_->row()*3) + (endDrop_->column()+1), endDrop_->getCount());
+
+
     }
     else
         event->ignore();

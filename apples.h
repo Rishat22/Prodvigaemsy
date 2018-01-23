@@ -10,11 +10,13 @@ class Apples: public QTableWidget
     Q_OBJECT
 public:
     Apples(QWidget *parent = 0);
+
 private:
-    QString nameThisObject;
-    QString appleIconPath;
-    InventoryItem *startDrop_;
-    InventoryItem *endDrop_;
+    const QString iconPath_ = ":/resources/appleIcon.png";
+    const QString itemType_ = "Apple";
+    InventoryItem *startDrop;
+    InventoryItem *endDrop;
+    DB_Manager* dbase;
 protected:
     void mousePressEvent(QMouseEvent *event);
     void dropEvent(QDropEvent *event);

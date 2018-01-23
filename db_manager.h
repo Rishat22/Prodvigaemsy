@@ -28,10 +28,11 @@ public:
     bool deleteFromEquipment(const int& id);
     bool eraseItems();
     bool eraseEquipment();
+    void open(const QString& path);
 
 private:
     QSqlDatabase db;
-    void open(const QString& path);
+
 };
 
 #endif // DB_MANAGER_H

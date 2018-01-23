@@ -10,6 +10,8 @@ class Inventory : public QTableWidget
     Q_OBJECT
 public:
     Inventory(QWidget *parent = 0);
+    ~Inventory();
+
 private slots:
     void clearCell(int row, int col);
 private:
@@ -18,6 +20,7 @@ private:
     QSound *obj;
     InventoryItem *startDrop_;
     InventoryItem *endDrop_;
+    DB_Manager* dbase;
 signals:
     void cellDropped(int, int);
 protected:

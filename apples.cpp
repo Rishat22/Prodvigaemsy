@@ -17,17 +17,14 @@ Apples::Apples(QWidget *parent) :
     this->setDropIndicatorShown(true);
     this->setAcceptDrops(true);
     this->setDropIndicatorShown(true);
-    startDrop_ = new InventoryItem();
-    endDrop_ = new InventoryItem();
+    startDrop = new InventoryItem();
+    endDrop = new InventoryItem();
+    //data base
+    dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
+    dbase->insertIntoItems(startDrop->getItemType(),startDrop->getItemPath()); //добавление элемента в таблицу Items
 
-    nameThisObject = "Apple";
-    appleIconPath = ":/resources/appleIcon.png";
-
-    //Data_base:
-    DB_Manager* dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
-    dbase->createTables(); //если (БД удалялась и) какой то из "equipment", "items" не хватает, создать их
-    dbase->insertIntoItems(nameThisObject,appleIconPath); //добавление элемента в таблицу Items
 }
+
 
 void Apples::mousePressEvent(QMouseEvent *event)
 {
@@ -36,7 +33,7 @@ void Apples::mousePressEvent(QMouseEvent *event)
         QTableWidgetItem *targetItem = itemAt(event->pos());
 
         InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
-        startDrop_ = invItemTarget;
+        startDrop = invItemTarget;
         if(!invItemTarget)
             return;
 
@@ -83,8 +80,8 @@ void Apples::dropEvent(QDropEvent *event)
     QTableWidgetItem *targetItem = itemAt(event->pos());
 
     InventoryItem *invItemTarget  = (InventoryItem*)targetItem;
-    endDrop_ = invItemTarget;
-    if(startDrop_ != endDrop_)
+    endDrop = invItemTarget;
+    if(startDrop != endDrop)
     {
         invItemTarget->increaseCount(event->mimeData()->text().toInt());
 

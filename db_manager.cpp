@@ -2,7 +2,7 @@
 
 DB_Manager::DB_Manager()
 {
-    open("db_playEquipment.sqlite");
+//    open("db_playEquipment.sqlite");
 }
 
 DB_Manager::DB_Manager(const QString& path)
@@ -374,6 +374,8 @@ bool DB_Manager::eraseItems()
     QSqlQuery query(db);
     query.prepare("DELETE FROM items");
     if(query.exec()) {
+        query.prepare("DELETE FROM sqlite_sequence");
+        query.exec();
         return true;
     } else {
         qDebug() << "erase Items error: " << query.lastError();

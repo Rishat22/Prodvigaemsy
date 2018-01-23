@@ -16,9 +16,14 @@ public:
     int getCount();
     void decreaseCout();
 
+    QString getItemPath() const;
+    QString getItemType() const;
+
 private:
-    const QString iconPath_ = ":/resources/icon.png";
+    QString itemPath_;
+    QString itemType_;
     int count_;
+
 };
 
 #endif // INVENTORYITEM_H

@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QPropertyAnimation> //скрытие главного меню
 #include <QFile>
-
+#include "db_manager.h"
 
 //вспамогательные библиоеки
 #include <QDebug>
@@ -31,6 +31,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QPropertyAnimation *animation;
+    DB_Manager* dbase;
 };
 
 #endif // MAINWINDOW_H

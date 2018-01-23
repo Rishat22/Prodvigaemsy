@@ -6,13 +6,21 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    //create data base
+    dbase = new DB_Manager(); //создание БД по умолчанию db_playEquipment.sqlite
+    dbase->open("db_playEquipment.sqlite");// if the file does not exists, create with that name
+    dbase->createTables();
+
     ui->setupUi(this);
 
-   //R ui->apples->setItem(0,0, new InventoryItem());
 
     InventoryItem *originItem = new InventoryItem();
     originItem->setCount(1);
     originItem->setIcon_();
+    for(int i = 1; i <= ui->inventory->rowCount()*ui->inventory->columnCount(); i++)
+    {
+        dbase->insertIntoEquipment(i, originItem->getItemType(), 0);
+    }
     ui->apples->setItem(0,0,originItem);
 
 
@@ -48,11 +56,28 @@ MainWindow::MainWindow(QWidget *parent) :
     dbase->insertIntoEquipment(8,"apple",33);
     inventory = dbase->getEquipment();*/
     //конец
+
+    //create data base
+QStringList tables = dbase->getListTables();
+qDebug() <<"List of tables: " <<tables;
+    QStringList items = dbase->getItems();
+    qDebug() <<"List of items: " << items;
+    QStringList inventory = dbase->getEquipment();
+    qDebug() <<"List of equipment: " << inventory;
 }
 
 MainWindow::~MainWindow()
 {
+    QStringList tables = dbase->getListTables();
+    qDebug() <<"List of tables: " <<tables;
+        QStringList items = dbase->getItems();
+        qDebug() <<"List of items: " << items;
+        QStringList inventory = dbase->getEquipment();
+        qDebug() <<"List of equipment: " << inventory;
+
     delete ui;
+    dbase->eraseEquipment();
+    dbase->eraseItems();
 }
 
 void MainWindow::on_exit_clicked()
